@@ -1,0 +1,1349 @@
+openapi: 3.0.2
+info:
+  title: Turing Pizza API
+  description: The APIs for Turing Pizza project, which includes the access to pizza
+    sizes, pizza toppings, pizza specials, pizzas, stores and orders information through
+    various of endpoints and methods. <br></br>You can find out more about Turing
+    Pizza API at [GitHub](https://github.ccs.neu.edu/cs5500f19/TuringPizza)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Turing Pizza API
+    url: https://github.ccs.neu.edu/cs5500f19/TuringPizza
+    email: turingpizza@turingpizza.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Design Documentation
+  url: https://docs.google.com/document/d/1YiFDgB5EXzE3SiFgwJpsHlCDe1HqelU9l70rqVid2xU/edit?usp=sharing
+servers:
+- url: https://virtserver.swaggerhub.com/TuringPizza/TuringPizza/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:8080/TuringPizza/TuringPizza/1.0.0
+  description: Development local server
+- url: https://turingpizza-wenbo.herokuapp.com/TuringPizza/TuringPizza/1.0.0
+  description: Production server
+- url: https://agile-caverns-97220.herokuapp.com/TuringPizza/TuringPizza/1.0.0
+  description: Production server - Maitri
+tags:
+- name: Pizza Sizes
+  description: Everything about pizza sizes
+- name: Pizza Toppings
+  description: Everything about pizza toppings
+- name: Pizza Specials
+  description: Everything about pizza specials
+- name: Pizza Stores
+  description: Everything about pizza stores
+- name: Pizza Orders
+  description: Everything about pizza orders
+paths:
+  /sizes:
+    get:
+      tags:
+      - Pizza Sizes
+      summary: Get all available pizza sizes.
+      description: 'Access to all pizza sizes we provide. All pizza sizes will include
+        the unique size id as an interger, the size name as a string, size measurement
+        as a float number and the price for the size as a float number. Sizes will,
+        by default, include `small`, `medium` and `large`, but will offer other CRUD
+        operations as well. Return all pizza sizes object array. '
+      operationId: get_pizza_sizes
+      responses:
+        200:
+          description: 'Return all the available pizza sizes objects in an array. '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PizzaSize'
+                x-content-type: application/json
+        404:
+          description: 'No pizza sizes found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_sizes_controller
+    post:
+      tags:
+      - Pizza Sizes
+      summary: Create a new pizza size.
+      description: 'Make a new pizza size object with unique pizza size id, size name,
+        size measurement and size price, and post it to the server. Return newly added
+        pizza size object if succeeds posting, otherwise return with error code. '
+      operationId: add_pizza_size
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaSizeBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSize'
+      x-openapi-router-controller: swagger_server.controllers.pizza_sizes_controller
+  /sizes/{pizzaSizeId}:
+    get:
+      tags:
+      - Pizza Sizes
+      summary: 'Get a pizza size given its Id. '
+      description: 'Access to a pizza size with unique id, name, measurement in inches
+        as a float number, and price as float number. Return the queried pizza size
+        object. '
+      operationId: get_pizza_size
+      parameters:
+      - name: pizzaSizeId
+        in: path
+        description: 'The Id of the pizza size to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSize'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza size found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_sizes_controller
+    put:
+      tags:
+      - Pizza Sizes
+      summary: 'Update a new pizza size given its Id. '
+      description: 'Update the pizza size. Cannot update Id since it is unique to
+        the pizza size. But can update size name, size measurement, or size price.
+        Return the updated pizza size object. '
+      operationId: update_pizza_size
+      parameters:
+      - name: pizzaSizeId
+        in: path
+        description: 'The Id of the pizza size to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaSizeBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSize'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza size found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_sizes_controller
+    delete:
+      tags:
+      - Pizza Sizes
+      summary: 'Delete a pizza size given its Id. '
+      description: 'Given the pizza size Id, delete this pizza size completely from
+        the server. Return the deleted pizza size object. '
+      operationId: delete_pizza_size
+      parameters:
+      - name: pizzaSizeId
+        in: path
+        description: 'The Id of the pizza size to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSize'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza size found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_sizes_controller
+  /toppings:
+    get:
+      tags:
+      - Pizza Toppings
+      summary: 'Get all available pizza toppings. '
+      description: 'Get access to all pizza toppings stored in the database. By default,
+        some toppings are already available on start and provided by the vendor. All
+        pizza toppings will include its Id as an integer, name as a string, price
+        as a float number, and gluten free or not as a boolean value. Return all pizza
+        toppings objects in an array. '
+      operationId: get_pizza_toppings
+      responses:
+        200:
+          description: 'Return all the available pizza toppings objects in an array. '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PizzaTopping'
+                x-content-type: application/json
+        404:
+          description: 'No pizza toppings found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_toppings_controller
+    post:
+      tags:
+      - Pizza Toppings
+      summary: 'Create a new pizza topping. '
+      description: 'Make a new pizza topping with new unique Id, new name, new price,
+        and new gluten_free property and store onto the database. Return newly created
+        pizza topping object. '
+      operationId: add_pizza_topping
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaToppingBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaTopping'
+      x-openapi-router-controller: swagger_server.controllers.pizza_toppings_controller
+  /toppings/{pizzaToppingId}:
+    get:
+      tags:
+      - Pizza Toppings
+      summary: 'Get the pizza topping given Id. '
+      description: 'Get the pizza topping with the given Id. Return the queried pizza
+        topping object. '
+      operationId: get_pizza_topping
+      parameters:
+      - name: pizzaToppingId
+        in: path
+        description: 'The Id of the pizza topping to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaTopping'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza topping found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_toppings_controller
+    put:
+      tags:
+      - Pizza Toppings
+      summary: 'Update the pizza topping given Id. '
+      description: 'Update the pizza topping with the given Id. Cannot update the
+        pizza_toppings_id since it is unique, but can update name, price, or gluten_free.  Return
+        the updated pizza topping object. '
+      operationId: update_pizza_topping
+      parameters:
+      - name: pizzaToppingId
+        in: path
+        description: 'The Id of the pizza topping to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaToppingBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaTopping'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza topping found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_toppings_controller
+    delete:
+      tags:
+      - Pizza Toppings
+      summary: 'Delete the pizza topping given Id. '
+      description: 'Delete the pizza topping with the given Id. Return the deleted
+        pizza topping object. '
+      operationId: delete_pizza_topping
+      parameters:
+      - name: pizzaToppingId
+        in: path
+        description: 'The Id of the pizza topping to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaTopping'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza topping found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_toppings_controller
+  /pizza_specials:
+    get:
+      tags:
+      - Pizza Specials
+      summary: 'Get all available pizza specials from the database. '
+      description: 'Get all the pizza special objects stored on the database. This
+        will return an array of JSON objects that represent the pizza specials. Each
+        object will contain the information including pizza_specials_id as an integer,
+        name and description as string, base price of the special as a float number,
+        and the boolean value for gluten_free. '
+      operationId: get_pizza_specials
+      responses:
+        200:
+          description: 'Return all the available pizza specials objects in an array. '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PizzaSpecial'
+                x-content-type: application/json
+        400:
+          description: 'Bad requests, please try again. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_specials_controller
+    post:
+      tags:
+      - Pizza Specials
+      summary: 'Create a new pizza special. '
+      description: 'Make a new pizza special object with unique pizza special id,
+        name, description, base price, and gluten_free boolean value, and post it
+        to the server. Return newly added pizza special object if succeeds posting,
+        otherwise return with error code and error message. '
+      operationId: add_pizza_special
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaSpecialBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSpecial'
+      x-openapi-router-controller: swagger_server.controllers.pizza_specials_controller
+  /pizza_specials/{pizzaSpecialId}:
+    get:
+      tags:
+      - Pizza Specials
+      summary: 'Get a pizza special given its Id. '
+      description: 'Access to the information of a pizza special object by its ID,
+        including the unique pizza special ID, name, description, base_price and gluten_free.
+        This will return a JSON object after a successful calling, otherwise error
+        code with error message. '
+      operationId: get_pizza_special
+      parameters:
+      - name: pizzaSpecialId
+        in: path
+        description: 'The Id of the queried pizza special. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSpecial'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza special found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_specials_controller
+    put:
+      tags:
+      - Pizza Specials
+      summary: 'Update a pizza special given its Id and new content. '
+      description: 'Update the pizza special. Cannot update Id since it is unique
+        to the pizza special. But can update name, description, base_price and gluten_free.
+        Return the updated pizza special object. '
+      operationId: update_pizza_special
+      parameters:
+      - name: pizzaSpecialId
+        in: path
+        description: 'The Id of the queried pizza special. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaSpecialBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSpecial'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza special found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_specials_controller
+    delete:
+      tags:
+      - Pizza Specials
+      summary: 'Delete a pizza special given its Id. '
+      description: 'Given the pizza special Id, delete this pizza special completely
+        from the server. Return the deleted pizza special object. '
+      operationId: delete_pizza_special
+      parameters:
+      - name: pizzaSpecialId
+        in: path
+        description: 'The Id of the queried pizza special. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaSpecial'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza special found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_specials_controller
+  /stores:
+    get:
+      tags:
+      - Pizza Stores
+      summary: Get all available pizza stores.
+      description: 'Access to all pizza stores we provide. All pizza stores will include
+        the unique store id as an interger, the store name as a string, store location
+        as a string. Store will offer other CRUD operations as well. Return all stores  object
+        array. '
+      operationId: get_all_pizza_stores
+      responses:
+        200:
+          description: 'Return all the available pizza stores objects in an array. '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PizzaStore'
+                x-content-type: application/json
+        404:
+          description: 'No pizza stores found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_stores_controller
+    post:
+      tags:
+      - Pizza Stores
+      summary: Create a new pizza store.
+      description: 'Make a new pizza store object with unique pizza store id, store
+        name, store location and post it to the server. Return newly added pizza store
+        object if succeeds posting, otherwise return with error code. '
+      operationId: add_pizza_stores
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaStoreBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaStore'
+      x-openapi-router-controller: swagger_server.controllers.pizza_stores_controller
+  /stores/{pizzaStoreId}:
+    get:
+      tags:
+      - Pizza Stores
+      summary: 'Get a pizza store given its Id. '
+      description: 'Access to a pizza store with unique id, name, location. Return
+        the queried pizza store object. '
+      operationId: get_pizza_store
+      parameters:
+      - name: pizzaStoreId
+        in: path
+        description: 'The Id of the pizza store to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaStore'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza store found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_stores_controller
+    put:
+      tags:
+      - Pizza Stores
+      summary: 'Update a new pizza store given its Id. '
+      description: 'Update the pizza store. Cannot update Id since it is unique to
+        the pizza store. But can update store name, store location. Return the updated
+        pizza store object. '
+      operationId: update_pizza_store
+      parameters:
+      - name: pizzaStoreId
+        in: path
+        description: 'The Id of the pizza store to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaStoreBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaStore'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza store found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_stores_controller
+    delete:
+      tags:
+      - Pizza Stores
+      summary: 'Delete a pizza store given its Id. '
+      description: 'Given the pizza store Id, delete this pizza store completely from
+        the server. Return the deleted pizza store object. '
+      operationId: delete_pizza_store
+      parameters:
+      - name: pizzaStoreId
+        in: path
+        description: 'The Id of the pizza store to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaStore'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza store found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_stores_controller
+  /stores/{pizzaStoreId}/specials:
+    get:
+      tags:
+      - Pizza Stores
+      summary: 'Get a pizza store specials given its Id. '
+      description: 'Access to a pizza store specials with the stores unique id. Return
+        the queried pizza store object. '
+      operationId: get_pizza_store_specials
+      parameters:
+      - name: pizzaStoreId
+        in: path
+        description: 'The Id of the pizza store to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaStore'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza store found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_stores_controller
+  /stores/{pizzaStoreId}/specials/{pizzaSpecialId}:
+    put:
+      tags:
+      - Pizza Stores
+      summary: 'Update pizza specials for a given store based on its ID. '
+      description: 'Update the pizza store specials. Cannot update store Id since
+        it is unique to the pizza store. But can update only the pizza store specials.
+        Return the updated pizza store object. '
+      operationId: update_pizza_store_specials
+      parameters:
+      - name: pizzaStoreId
+        in: path
+        description: 'The Id of the pizza store to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      - name: pizzaSpecialId
+        in: path
+        description: 'The Id of the queried pizza special. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaStoreBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PizzaStore'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza store found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_stores_controller
+  /orders:
+    get:
+      tags:
+      - Pizza Orders
+      summary: Get all pizza orders stored on the database.
+      description: 'Access to all pizza orders in the database. This will return an
+        array of pizza orders objects, including each pizza order''s unique id, total_price,
+        an array of pizza_id, and pizza_store_id associated with this order. '
+      operationId: get_pizza_orders
+      responses:
+        200:
+          description: 'Return all the available orders objects in an array. '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+                x-content-type: application/json
+        400:
+          description: 'Bad request. Please try again later. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+    post:
+      tags:
+      - Pizza Orders
+      summary: Create a new pizza order.
+      description: 'Make a new pizza order object with unique pizza order id, total_price,
+        an array of pizzas_id and pizza_store_id, and post it to the server. Return
+        newly added pizza order object if succeeds posting, otherwise return with
+        error code. '
+      operationId: add_pizza_order
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaOrderBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+  /orders/{pizzaOrderId}:
+    get:
+      tags:
+      - Pizza Orders
+      summary: 'Get a pizza order given its Id. '
+      description: 'Access to a pizza order with unique id, total_price, an array
+        of pizzas_id, and pizza_store_id. Return the queried pizza order object. '
+      operationId: get_pizza_order
+      parameters:
+      - name: pizzaOrderId
+        in: path
+        description: 'The Id of the order to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        400:
+          description: 'Invalid Id supplied. '
+        404:
+          description: 'No pizza order found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+    delete:
+      tags:
+      - Pizza Orders
+      summary: Delete an order.
+      description: 'Delete an order object with unique pizza order id, order price
+        and post it to the server. Return deleted pizza order object if succeeds,
+        otherwise return with error code. '
+      operationId: delete_order
+      parameters:
+      - name: pizzaOrderId
+        in: path
+        description: 'The Id of the order to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+  /orders/{pizzaOrderId}/pizzas:
+    get:
+      tags:
+      - Pizza Orders
+      summary: Get all customized pizzas for the order given the order Id.
+      description: 'Access to all customized pizzas a customer has placed in the order
+        by the order Id. This will return a JSON object, which is an array of Pizzas
+        object. Successful return will give 200 status code, otherwise will give error
+        code with error message. '
+      operationId: get_order_pizzas
+      parameters:
+      - name: pizzaOrderId
+        in: path
+        description: 'The Id of the order to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: 'Return all the available customized pizzas objects in an array. '
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pizza'
+                x-content-type: application/json
+        400:
+          description: 'Bad request. Please try again later. Not a valid order Id. '
+        404:
+          description: 'No pizza order found. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+    post:
+      tags:
+      - Pizza Orders
+      summary: 'Create a new customized pizza for a specific order given the order
+        Id. '
+      description: 'Make a new customized pizza object with unique pizza id, pizza_special_id,
+        an array of pizza_toppings_id, count, total_price and pizza_size_id to the
+        server. Return newly added customized pizza object if succeeds posting, otherwise
+        return with error code. '
+      operationId: add_order_pizza
+      parameters:
+      - name: pizzaOrderId
+        in: path
+        description: 'The Id of the order to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      requestBody:
+        $ref: '#/components/requestBodies/PizzaBody'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+  /orders/{pizzaOrderId}/pizza/{pizzaId}:
+    put:
+      tags:
+      - Pizza Orders
+      summary: Update a specific pizza in a specific Order.
+      description: 'Update a pizza that is available in an Order.  All pizza orders
+        will include the unique order id as an integer, the order price as float,
+        unique pizza store id and unique pizza ids. Order will offer other CRUD operations
+        as well. Return the updated order object. '
+      operationId: update_pizza_in_orders
+      parameters:
+      - name: pizzaOrderId
+        in: path
+        description: 'The Id of the order to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      - name: pizzaId
+        in: path
+        description: 'The Id of the customized pizza to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        400:
+          description: 'Bad request. '
+        404:
+          description: 'No pizza order found or no pizza found for the order. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+    delete:
+      tags:
+      - Pizza Orders
+      summary: Delete a pizza in order.
+      description: 'Delete a pizza in order object with unique pizza order id, order
+        price and post it to the server. Return deleted pizza order object if succeeds,
+        otherwise return with error code. '
+      operationId: delete_pizza_in_orders
+      parameters:
+      - name: pizzaOrderId
+        in: path
+        description: 'The Id of the order to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      - name: pizzaId
+        in: path
+        description: 'The Id of the customized pizza to be queried. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          default: 123
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        400:
+          description: 'Bad request. '
+        404:
+          description: 'No pizza order found or no pizza found for the order. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+  /orders/getcount:
+    get:
+      tags:
+      - Pizza Orders
+      summary: 'Get the proper count of pizzas using a predefined algorithm. '
+      description: 'User will input the number of adults and number of children for
+        the order. Both numbers are required. This will return the suggested number
+        of pizzas to order basing on a predefined algorithm. '
+      operationId: get_pizza_count
+      parameters:
+      - name: adult
+        in: query
+        description: 'The number of adults for this order. '
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+          example: 5
+      - name: child
+        in: query
+        description: 'The number of children for this order. '
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+          example: 5
+      responses:
+        200:
+          description: 'Return the suggested number of medium pizzas. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        400:
+          description: 'Invalid input, please enter number of adults and children. '
+      x-openapi-router-controller: swagger_server.controllers.pizza_orders_controller
+components:
+  schemas:
+    PizzaSize:
+      title: Pizza Size
+      type: object
+      properties:
+        pizza_sizes_id:
+          type: integer
+          description: 'The Id of a pizza size. '
+          format: int64
+          example: 123
+        name:
+          type: string
+          description: 'The string name of a pizza size. '
+          example: medium
+        measurement:
+          type: number
+          description: 'The diagonal inches for the pizza size. '
+          format: float
+          example: 9
+        size_price:
+          type: number
+          description: 'The extra price on the order for choosing this pizza size. '
+          format: float
+          example: 5
+      example:
+        pizza_sizes_id: 123
+        name: medium
+        size_price: 5
+        measurement: 9
+    PizzaTopping:
+      title: Pizza Topping
+      type: object
+      properties:
+        pizza_toppings_id:
+          type: integer
+          description: 'The Id of a pizza topping. '
+          format: int64
+          example: 123
+        name:
+          type: string
+          description: 'The name of a pizza topping. '
+          example: cheese
+        topping_price:
+          type: number
+          description: 'The extra price on the order of a pizza topping. '
+          format: float
+          example: 2.99
+        gluten_free:
+          type: boolean
+          description: 'The boolean value to reflect if a pizza topping is gluten
+            free or not. '
+          format: boolean
+          example: true
+      example:
+        topping_price: 2.99
+        name: cheese
+        pizza_toppings_id: 123
+        gluten_free: true
+    PizzaSpecial:
+      title: Pizza Special
+      type: object
+      properties:
+        pizza_specials_id:
+          type: integer
+          description: 'The id of a pizza special. '
+          format: int64
+          example: 123
+        name:
+          type: string
+          description: 'The name of a pizza special. '
+          example: Royal Cheese pizza
+        description:
+          type: string
+          description: 'The description of the pizza special, a general introduction
+            to the product. '
+          example: 'The star product of our store. Taste the perfect cheese and enjoy
+            your day! '
+        base_price:
+          type: number
+          description: 'The base price of the pizza special. '
+          format: float
+          example: 4.99
+        gluten_free:
+          type: boolean
+          description: 'The boolean value to reflect if this pizza special is gluten
+            free or not. '
+          format: boolean
+          example: true
+      example:
+        name: Royal Cheese pizza
+        base_price: 4.99
+        description: 'The star product of our store. Taste the perfect cheese and
+          enjoy your day! '
+        gluten_free: true
+        pizza_specials_id: 123
+    PizzaStore:
+      title: Pizza Store
+      type: object
+      properties:
+        pizza_stores_id:
+          type: integer
+          description: 'The id of a pizza store. '
+          format: int64
+          example: 123
+        store_name:
+          type: string
+          description: 'The name of a pizza store. '
+          example: Turing Pizza NEU Seattle
+        store_location:
+          type: string
+          description: 'The location of a pizza store. '
+          example: 225 Terry Ave, Seattle, WA 98109
+        specials:
+          type: array
+          description: 'The IDs of pizza specials that the store currently offers. '
+          example:
+          - 1
+          - 2
+          - 3
+          items:
+            type: integer
+            format: int64
+      example:
+        pizza_stores_id: 123
+        specials:
+        - 1
+        - 2
+        - 3
+        store_name: Turing Pizza NEU Seattle
+        store_location: 225 Terry Ave, Seattle, WA 98109
+    Pizza:
+      title: Pizza
+      type: object
+      properties:
+        pizzas_id:
+          type: integer
+          description: 'The id of a customized pizza in an order. '
+          format: int64
+          example: 123
+        pizza_special_id:
+          type: integer
+          description: 'The id of the pizza special that this customized pizza created
+            upon. '
+          format: int64
+          example: 123
+        pizza_toppings_id:
+          type: array
+          description: 'The IDs of pizza toppings that this customized pizza created
+            with. '
+          example:
+          - 1
+          - 2
+          - 3
+          items:
+            type: integer
+            format: int64
+        pizza_size_id:
+          type: integer
+          description: 'The id of the pizza size of the customized pizza. '
+          format: int64
+          example: 123
+        count:
+          type: integer
+          description: 'The count of this customized pizza in an order. '
+          format: int64
+          example: 5
+        total_price:
+          type: number
+          description: 'The total price of this customized pizza in an order, which
+            is the single price of this customized pizza * count. '
+          format: float
+          example: 29.99
+      example:
+        total_price: 29.99
+        pizza_size_id: 123
+        count: 5
+        pizza_toppings_id:
+        - 1
+        - 2
+        - 3
+        pizza_special_id: 123
+        pizzas_id: 123
+    Order:
+      title: Order
+      type: object
+      properties:
+        orders_id:
+          type: integer
+          description: 'The id of an order. '
+          format: int64
+          example: 123
+        pizza_store_id:
+          type: integer
+          description: 'The id of a pizza store this order belongs to. '
+          format: int64
+          example: 123
+        pizzas_id:
+          type: array
+          description: 'The IDs of customized pizzas that this order includes. '
+          example:
+          - 1
+          - 2
+          - 3
+          items:
+            type: integer
+            format: int64
+        total_price:
+          type: number
+          description: 'The total price for this order, which is the sum of the price
+            of the customized pizzs within this order. This price is a pretax price. '
+          format: float
+          example: 29.99
+      example:
+        orders_id: 123
+        total_price: 29.99
+        pizza_store_id: 123
+        pizzas_id:
+        - 1
+        - 2
+        - 3
+    inline_response_200:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: 'The suggested number of medium sized pizzas. '
+          format: int64
+          example: 5
+      example:
+        count: 5
+  responses:
+    AllPizzaSizes:
+      description: 'Return all the available pizza sizes objects in an array. '
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PizzaSize'
+            x-content-type: application/json
+    AllPizzaToppings:
+      description: 'Return all the available pizza toppings objects in an array. '
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PizzaTopping'
+            x-content-type: application/json
+    AllPizzaSpecials:
+      description: 'Return all the available pizza specials objects in an array. '
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PizzaSpecial'
+            x-content-type: application/json
+    AllPizzas:
+      description: 'Return all the available customized pizzas objects in an array. '
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Pizza'
+            x-content-type: application/json
+    AllPizzaStores:
+      description: 'Return all the available pizza stores objects in an array. '
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PizzaStore'
+            x-content-type: application/json
+    AllPizzaOrders:
+      description: 'Return all the available orders objects in an array. '
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Order'
+            x-content-type: application/json
+  parameters:
+    pizzaSizeId:
+      name: pizzaSizeId
+      in: path
+      description: 'The Id of the pizza size to be queried. '
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+        default: 123
+    pizzaToppingId:
+      name: pizzaToppingId
+      in: path
+      description: 'The Id of the pizza topping to be queried. '
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+        default: 123
+    pizzaSpecialId:
+      name: pizzaSpecialId
+      in: path
+      description: 'The Id of the queried pizza special. '
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+        default: 123
+    pizzaId:
+      name: pizzaId
+      in: path
+      description: 'The Id of the customized pizza to be queried. '
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+        default: 123
+    pizzaStoreId:
+      name: pizzaStoreId
+      in: path
+      description: 'The Id of the pizza store to be queried. '
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+        default: 123
+    pizzaOrderId:
+      name: pizzaOrderId
+      in: path
+      description: 'The Id of the order to be queried. '
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+        default: 123
+  requestBodies:
+    PizzaSizeBody:
+      description: PizzaSize object that needs to be stored in database
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PizzaSize'
+      required: true
+    PizzaToppingBody:
+      description: PizzaTopping object that needs to be stored in database
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PizzaTopping'
+      required: true
+    PizzaSpecialBody:
+      description: PizzaSpecial object that needs to be stored in database
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PizzaSpecial'
+      required: true
+    PizzaBody:
+      description: Pizza object that needs to be stored in database
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pizza'
+      required: true
+    PizzaStoreBody:
+      description: PizzaStore object that needs to be stored in database
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PizzaStore'
+      required: true
+    PizzaOrderBody:
+      description: Order object that needs to be stored in database
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Order'
+      required: true
+

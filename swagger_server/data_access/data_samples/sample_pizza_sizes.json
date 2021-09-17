@@ -1,0 +1,20 @@
+[
+    {
+        "pizza_sizes_id": 123,
+        "name": "small",
+        "measurement": 6.0,
+        "size_price": 1.99
+    },
+    {
+        "pizza_sizes_id": 456,
+        "name": "medium",
+        "measurement": 9.0,
+        "size_price": 2.99
+    },
+    {
+        "pizza_sizes_id": 789,
+        "name": "large",
+        "measurement": 12.0,
+        "size_price": 3.99
+    }
+]

@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+pytest = "*"
+
+[packages]
+connexion = {extras = ["swagger-ui"],version = "*"}
+python-dateutil = "==2.6.0"
+flask = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
+flask-sqlalchemy = "*"
+gunicorn = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+marshmallow = "*"
+
+[requires]
+python_version = "3.7"

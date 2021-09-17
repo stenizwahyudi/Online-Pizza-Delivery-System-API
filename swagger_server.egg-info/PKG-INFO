@@ -1,0 +1,12 @@
+Metadata-Version: 1.0
+Name: swagger-server
+Version: 1.0.0
+Summary: Turing Pizza API
+Home-page: UNKNOWN
+Author: UNKNOWN
+Author-email: turingpizza@turingpizza.com
+License: UNKNOWN
+Description:     The APIs for Turing Pizza project, which includes the access to pizza sizes, pizza toppings, pizza specials, pizzas, stores and orders information through various of endpoints and methods. &lt;br&gt;&lt;/br&gt;You can find out more about Turing Pizza API at [GitHub](https://github.ccs.neu.edu/cs5500f19/TuringPizza)
+            
+Keywords: Swagger,Turing Pizza API
+Platform: UNKNOWN
